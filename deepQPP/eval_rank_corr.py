@@ -8,6 +8,8 @@ def reportRankCorr(x, y):
     tau, pval = stats.kendalltau(x, y)
     print('P-r = {:,.4f}, S-rho = {:.4f}, K-tau = {:.4f}\n'.format(corr, rho, tau))
 
+    return corr, rho, tau
+
 #also compute the avg shift in ranks
 def RMSE(x, y):
     i = 1

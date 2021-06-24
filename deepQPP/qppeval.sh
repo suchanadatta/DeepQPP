@@ -4,10 +4,10 @@ if [ $# -le 6 ]
 then
     echo "Usage: " $0 " <following arguments in the order>";
     echo "1. Path of the AP file.";
-    echo "2. Path of the interaction matrix (separate file for each qid)."
-    echo "3. Training batch size."
+    echo "2. Path of the interaction matrix (separate file for each qid).";
+    echo "3. Training batch size.";
     echo "4. No. of epochs.";
-    echo "5. No. of cross valiadtion folds.";
+    echo "5. No. of cross validation folds.";
     echo "6. Type of evaluation : pair/point.";	
     echo "7. Want to save predicted values? -- yes/no.";
     exit 1;

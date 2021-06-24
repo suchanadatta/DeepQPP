@@ -4,8 +4,8 @@ if [ $# -le 6 ]
 then
     echo "Usage: " $0 " <following arguments in the order>";
     echo "1. Query file path.";
-    echo "2. Path of the lucene index.";
-    echo "3. Stopwords file path.";
+    echo "2. Path of the lucene index."
+    echo "3. Stopwords file path."
     echo "4. Initial retrieved documents.";
     echo "5. Word vector file path.";
     echo "6. Name of the field used for searching.";

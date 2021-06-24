@@ -262,6 +262,7 @@ class QPPEvalPoint:
         self.LR = 0.0001
         self.apPath = self.conf.config.get('Section', 'apPath')
         self.BATCH_SIZE = self.conf.config.get('Section', 'batchSize')
+        self.BATCH_SIZE_TEST = 1
         self.EPOCHS = self.conf.config.get('Section', 'epochs')
 
     def make_ap_dict(self):
@@ -347,7 +348,7 @@ class QPPEvalPoint:
             # test data generator
             test_generator = PointCmpDataGeneratorTest(all_point_list_test,
                                                        dataFolder=self.conf.config.get('Section', 'interMatrixPath'),
-                                                       batch_size=int(self.BATCH_SIZE),
+                                                       batch_size=int(self.BATCH_SIZE_TEST),
                                                        dim_top=(self.K, self.M, self.NUMCHANNELS),
                                                        dim_bottom=(self.L, self.M, self.NUMCHANNELS),
                                                        topDocs=self.K, bottomDocs=self.L, interMatrix=self.M)
@@ -373,7 +374,7 @@ class QPPEvalPoint:
             kendalls += tau
             fold_no +=1
 
-        print('\n======= 5-fold CV rank correlation measures =========')
+        print('======= 5-fold CV rank correlation measures =========')
         print('P-r = {:,.4f}, S-rho = {:.4f}, K-tau = {:.4f}'
               .format(pearsons/(fold_no-1), spearmans/(fold_no-1), kendalls/(fold_no-1)))
 

@@ -14,7 +14,7 @@ echo "\n#######################################################################"
 echo "##################### Running DeepQPP Module ##########################"
 echo "#######################################################################"
 
-sh qppeval.sh /home/suchana/PycharmProjects/DeepQPP/data/per_query_ap_401-450 /home/suchana/PycharmProjects/DeepQPP/data/interaction_matrix 1 1 5 pair yes
+sh qppeval.sh /home/suchana/PycharmProjects/DeepQPP/data/per_query_ap_401-450 /home/suchana/PycharmProjects/DeepQPP/data/interaction_matrix 10 1 5 point yes
 
 echo "============== DONE ==============="
 
