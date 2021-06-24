@@ -1,6 +1,6 @@
 To run the DeepQPP model, just check if your conda environment is good with the following.
-In case you want to use any higher or lower version of any of the following, check if 
-there is any compatibility issues.
+In case you want to use any higher or lower version of any of the followings, check if 
+there is any compatibility issue.
 
 # for InteractionMatrix (java module)
 jdk 1.8.0 or above
