@@ -3,6 +3,7 @@ This is a pairwise interaction based Deep Learning Model for supervised query pe
 
 ## Requirements
 To run the DeepQPP model, just check if your conda environment is good with the following packages. For more details please go through **requirements.txt**
+|                |
 |----------------|
 |Numpy 1.19.4|
 |Keras 2.3.0|
@@ -22,24 +23,24 @@ There is a top level bash script **main.sh**. Firstly, it runs the InteractionMa
 
 **Step-3:** Provide all arguments in order to run the bash script **interaction.sh** in main.sh. Following arguments should be given :
 ``````````````````````````````````````````````````````````````````````````````````````````
-> -- Query file path (.xml file)
-> -- Path of the Lucene index
-> -- Stopwords file path
-> -- Initial retrieved documents file (pseudo-relevant documents)
-> -- Word vector file path
-> -- Name of the field used for searching
-> -- Interaction matrix path (where matrices will be stored)
+> Query file path (.xml file)
+> Path of the Lucene index
+> Stopwords file path
+> Initial retrieved documents file (pseudo-relevant documents)
+> Word vector file path
+> Name of the field used for searching
+> Interaction matrix path (where matrices will be stored)
 ``````````````````````````````````````````````````````````````````````````````````````````
 
 Next, supervised deepQPP module is trained by a set of query pairs' relative specificity computed through **query_pair_judgement.py**. We train the model with paired data and tested with both paired and point test set. K-fold cross validation is used to test model's efficiency. Following arguments to be given in order to run the bash script **qppeval.sh** through main.sh. Check if arguments below are set in main.sh -
 ``````````````````````````````````````````````````````````````````````````````````````````
-> -- Path of the AP file
-> -- Path of the interaction matrix (separate file for each qid)
-> -- Training batch size
-> -- No. of epochs
-> -- No. of cross validation folds
-> -- Type of evaluation : pair/point
-> -- Want to save predicted values? -- yes/no
+> Path of the AP file
+> Path of the interaction matrix (separate file for each qid)
+> Training batch size
+> No. of epochs
+> No. of cross validation folds
+> Type of evaluation : pair/point
+> Want to save predicted values? -- yes/no
 ``````````````````````````````````````````````````````````````````````````````````````````
 
 
