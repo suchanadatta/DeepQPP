@@ -3,12 +3,12 @@ This is a pairwise interaction based Deep Learning Model for supervised query pe
 
 ## Requirements
 To run the DeepQPP model, just check if your conda environment is good with the following packages. For more details please go through **requirements.txt**
-|                |
-|----------------|
-|Numpy 1.19.4|
-|Keras 2.3.0|
-|Tensorflow 2.2.0|
-|Scikit-learn 0.23.2|
+``````````````````````````````````````````````````````````````````````````````````````````
+Numpy 1.19.4
+Keras 2.3.0
+Tensorflow 2.2.0
+Scikit-learn 0.23.2
+``````````````````````````````````````````````````````````````````````````````````````````
 
 ## Guide to use
 **Step-1:** Create a [conda environment](https://phoenixnap.com/kb/how-to-install-anaconda-ubuntu-18-04-or-20-04) and activate it by - 
@@ -44,6 +44,3 @@ Next, supervised deepQPP module is trained by a set of query pairs' relative spe
 > Type of evaluation : pair/point
 > Want to save predicted values? -- yes/no
 ``````````````````````````````````````````````````````````````````````````````````````````
-
-
-
