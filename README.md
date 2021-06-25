@@ -32,7 +32,9 @@ There is a top level bash script **main.sh**. Firstly, it runs the InteractionMa
 > Interaction matrix path (where matrices will be stored)
 ``````````````````````````````````````````````````````````````````````````````````````````
 
-Next, supervised deepQPP module is trained by a set of query pairs' relative specificity computed through **query_pair_judgement.py**. We train the model with paired data and tested with both paired and point test set. K-fold cross validation is used to test model's efficiency. Following arguments to be given in order to run the bash script **qppeval.sh** through main.sh. Check if arguments below are set in main.sh -
+Next, supervised deepQPP module is trained by a set of query pairs' relative specificity computed through **query_pair_judgement.py**. We train the model with paired data and tested with both paired and point test set. K-fold cross validation is used to test model's efficiency. 
+
+**Step-4:** Following arguments to be given in order to run the bash script **qppeval.sh** through main.sh. Check if arguments below are set in main.sh -
 ``````````````````````````````````````````````````````````````````````````````````````````
 > Path of the AP file
 > Path of the interaction matrix (separate file for each qid)
