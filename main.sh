@@ -6,7 +6,7 @@ echo "#######################################################################"
 echo "################# Generate Interaction Matrices #######################"
 echo "#######################################################################"
 
-sh intreaction.sh /home/suchana/NetBeansProjects/NeuralModelQpp/query.xml /store/index/trec678/ /home/suchana/smart-stopwords /store/causalIR/model-aware-qpp/lm-dir_res/lm_dir_top100 /store/causalIR/drmm/data/trec678.vec.model.txt content ../data/
+sh intreaction.sh /home/suchana/NetBeansProjects/NeuralModelQpp/query.xml /store/index/trec678/ /home/suchana/smart-stopwords /store/causalIR/model-aware-qpp/lm-dir_res/lm_dir_top100 /store/causalIR/drmm/data/trec678.vec.model.txt content ../data/interaction_matrix/
 
 cd ../deepQPP/
 
