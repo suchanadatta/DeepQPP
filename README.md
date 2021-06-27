@@ -25,11 +25,13 @@ nltk 3.5
 transformers 4.6.1
 ````````````````````````````````````````````
 ## Guide to use
-**Step-1:** Create a [conda environment](https://phoenixnap.com/kb/how-to-install-anaconda-ubuntu-18-04-or-20-04) 
+**Step-1:** Download TREC-Robust [java index and word vectors](https://drive.google.com/drive/folders/13k0AFcIemmtBvBpaBCyJR7ZYUIoRf2Kx?usp=sharing) here.
+
+**Step-2:** Create a [conda environment](https://phoenixnap.com/kb/how-to-install-anaconda-ubuntu-18-04-or-20-04) 
 and activate it using the command - 
 > conda activate <environment_name>
 
-**Step-2:** Check all the packages listed above using correct version of your pip -
+**Step-3:** Check all the packages listed above using correct version of your pip -
 > pip list
 
 In case required packages missing, install the right version in your current conda environment by running -
@@ -37,7 +39,7 @@ In case required packages missing, install the right version in your current con
 
 There is a top level bash script **main.sh**. Firstly, it runs the InteractionMatrix module to generate matching histograms of pseudo-relevant documents as proposed in the paper : [A Deep Relevance Matching Model for Ad-hoc Retrieval](https://dl.acm.org/doi/10.1145/2983323.2983769). It computes Log-IDF based histograms for a document with respect to a given query. This is built on top of LCH(Log-Count-based Histogram); LCH(with IDF) performs the best as reported in the paper. Given a query, interaction matrices computed for the set of respective relevant documents are stored in a single file with the name **query_id.hist**.
 
-**Step-3:** Provide all arguments in order to run the bash script **interaction.sh** in main.sh. Following arguments should be given :
+**Step-4:** Provide all arguments in order to run the bash script **interaction.sh** in main.sh. Following arguments should be given :
 ``````````````````````````````````````````````````````````````````````````````````````````
 > Query file path (.xml file)
 > Path of the Lucene index
@@ -50,7 +52,7 @@ There is a top level bash script **main.sh**. Firstly, it runs the InteractionMa
 
 Next, supervised deepQPP module is trained by a set of query pairs' relative specificity computed through **query_pair_judgement.py**. We train the model with paired data and tested with both paired and point test set. K-fold cross validation is used to test model's efficiency. 
 
-**Step-4:** Following arguments to be given in order to run the bash script **qppeval.sh** through main.sh. Check if arguments below are set in main.sh -
+**Step-5:** Following arguments to be given in order to run the bash script **qppeval.sh** through main.sh. Check if arguments below are set in main.sh -
 ``````````````````````````````````````````````````````````````````````````````````````````
 > Path of the AP file
 > Path of the interaction matrix (separate file for each qid)
