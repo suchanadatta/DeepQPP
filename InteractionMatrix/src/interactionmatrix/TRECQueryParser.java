@@ -18,6 +18,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.flexible.standard.StandardQueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
@@ -33,10 +34,13 @@ public class TRECQueryParser {
     String queryFile;
     QueryObject  query;
     Analyzer analyzer;
+    StandardQueryParser queryParser;
+
 
     public TRECQueryParser(String fileName, Analyzer analyzer) {
         this.queryFile = fileName;
         this.analyzer = analyzer;
+        queryParser = new StandardQueryParser(this.analyzer);
     }
 
     public List<QueryObject> makeQuery() throws IOException {
@@ -95,6 +99,16 @@ public class TRECQueryParser {
         stream.close();
 
         return tokenizedContentBuff.toString();
+    }
+    
+    public Query getAnalyzedQuery(QueryObject trecQuery, String field) throws Exception {
+
+        trecQuery.title = trecQuery.title.replaceAll("-", " ");
+        Query luceneQuery = queryParser.parse(trecQuery.title.replaceAll("/", " ")
+            .replaceAll("\\?", " ").replaceAll("\"", " ").replaceAll("\\&", " "), field);
+        trecQuery.luceneQuery = luceneQuery;
+
+        return luceneQuery;
     }
 
     public Query makeLuceneQuery(QueryObject qo, String fieldName) throws IOException {

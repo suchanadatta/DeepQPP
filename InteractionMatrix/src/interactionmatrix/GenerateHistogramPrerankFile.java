@@ -47,38 +47,51 @@ public class GenerateHistogramPrerankFile {
     GetStats                stats;
     String                  fieldName;
     String                  resPath;
+    String                  queryFile; 
     List<QueryObject>       queries;
     List<PrerankRelevance>  prerankData;  // to contain the retrieved documents for each query
     HashMap<String, Double> oneDocIdfMap;
     Set<String>             allQueryTerms;
     HashMap<String, Double> termIdf;
+    InitialRetrieval        initRet;      // reference to initial retrieval model     
+
     
 
     public GenerateHistogramPrerankFile (String propFile) throws Exception {
         
+        /* read properties file */
         prop = new Properties();
         prop.load(new FileReader(propFile));
         
+        /* set indexer and searcher */
         indexer = new TrecDocIndexer(propFile);
-
-        File indexDir = indexer.getIndexDir();
- 
+        File indexDir = indexer.getIndexDir(); 
         searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(indexDir.toPath())));
 
+        /* construct list of query objects from .xml file */
+        queryFile = prop.getProperty("queryPath");
         queries = constructQueries();
         System.out.println("Total no. of queries : " + queries.size());
         
+        /* compute statistics of the collection */
         stats = new GetStats(propFile);
         
         /* calculate max_idf = log(num_docs/lowest_df)-- to normalize all cosim*idf values */
         maxIdf = Math.log((double)stats.numDocs);
         System.out.println("Max IDF value : " + maxIdf);
         
+        /* set the field where to perform search */
         fieldName = prop.getProperty("searchField");
+        
+        /* perform initial retrieval */
+        initRet = new InitialRetrieval(this);
+        initRet.retrieveAll();
 
-        prerankData = readPrerankFile(prop.getProperty("retFilePath"));
+        /* read initial retrieved documents (pseudo-relevant) */
+        prerankData = readPrerankFile(initRet.resPath);
         System.out.println("Total no. of preranked documents : " + prerankData.size());
         
+        /* load word vectors */         
         System.out.println("Word vector loading started...");
         wvs = new WordVecs(prop);
         wvs.loadFromTextFile();
@@ -106,7 +119,6 @@ public class GenerateHistogramPrerankFile {
     public List<QueryObject> constructQueries() throws Exception {
 
         List<QueryObject> queries = new ArrayList<>();
-        String queryFile = prop.getProperty("queryPath");
         TRECQueryParser parser = new TRECQueryParser(queryFile, indexer.getAnalyzer());
         queries = parser.makeQuery();
         
@@ -351,7 +363,7 @@ public class GenerateHistogramPrerankFile {
         try {
             GenerateHistogramPrerankFile calHist = new GenerateHistogramPrerankFile(args[0]);
             
-            // generate histogram from prerank file
+            /* generate histogram from prerank file */
             calHist.makeHistogramPrerankFile();
         } catch (Exception ex) {
             ex.printStackTrace();
