@@ -1,23 +1,39 @@
 ﻿# DeepQPP
-This is a pairwise interaction based Deep Learning Model for supervised query performance prediction. The entire model is comprised of two modules - 1. **InteractionMatrix** (developed with Java) and 2. **DeepQPP** (written in Python) 
+This is a pairwise interaction based Deep Learning Model for supervised query performance prediction. 
+The entire model is comprised of two modules - 1. **InteractionMatrix** (developed with Java) and 
+2. **DeepQPP** (written in Python) 
 
 ## Requirements
-To run the DeepQPP model, just check if your conda environment is good with the following packages. For more details please go through **requirements.txt**
-``````````````````````````````````````````````````````````````````````````````````````````
-Numpy 1.19.4
-Keras 2.3.0
-Tensorflow 2.2.0
-Scikit-learn 0.23.2
-``````````````````````````````````````````````````````````````````````````````````````````
+To run the DeepQPP model, just check if your conda environment is good with the following python packages. 
+In case you want to use any higher or lower version of any of the followings, check if there is any 
+compatibility issue.
+````````````````````````````````````````````
+# for InteractionMatrix (java module)
+jdk 1.8.0 or above
+lucene 5.3.1
 
+# for DeepQPP learning (python module)
+conda 4.8.2
+python 3.7.9
+numpy 1.19.4
+keras 2.3.0
+tensorflow 2.2.0
+scikit-learn 0.23.2
+
+# for SN-BERT
+nltk 3.5
+transformers 4.6.1
+````````````````````````````````````````````
 ## Guide to use
-**Step-1:** Create a [conda environment](https://phoenixnap.com/kb/how-to-install-anaconda-ubuntu-18-04-or-20-04) and activate it by - 
+**Step-1:** Create a [conda environment](https://phoenixnap.com/kb/how-to-install-anaconda-ubuntu-18-04-or-20-04) 
+and activate it using the command - 
 > conda activate <environment_name>
 
 **Step-2:** Check all the packages listed above using correct version of your pip -
 > pip list
 
-In case any package is missing, install the right version in your current conda environment.
+In case required packages missing, install the right version in your current conda environment by running -
+> pip install -r requirements.txt 
 
 There is a top level bash script **main.sh**. Firstly, it runs the InteractionMatrix module to generate matching histograms of pseudo-relevant documents as proposed in the paper : [A Deep Relevance Matching Model for Ad-hoc Retrieval](https://dl.acm.org/doi/10.1145/2983323.2983769). It computes Log-IDF based histograms for a document with respect to a given query. This is built on top of LCH(Log-Count-based Histogram); LCH(with IDF) performs the best as reported in the paper. Given a query, interaction matrices computed for the set of respective relevant documents are stored in a single file with the name **query_id.hist**.
 
