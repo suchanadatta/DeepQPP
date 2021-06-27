@@ -62,3 +62,5 @@ Next, supervised deepQPP module is trained by a set of query pairs' relative spe
 > Type of evaluation : pair/point
 > Want to save predicted values? -- yes/no
 ``````````````````````````````````````````````````````````````````````````````````````````
+**Step-6:** Run the top level script
+> sh main.sh
