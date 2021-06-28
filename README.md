@@ -41,13 +41,15 @@ There is a top level bash script **main.sh**. Firstly, it runs the InteractionMa
 
 **Step-4:** Provide all arguments in order to run the bash script **interaction.sh** in main.sh. Following arguments should be given :
 ``````````````````````````````````````````````````````````````````````````````````````````
-> Query file path (.xml file)
-> Path of the Lucene index
-> Stopwords file path
-> Initial retrieved documents file (pseudo-relevant documents)
+> Query file (in .xml format)
+> Path of the lucene index
+> Stopwords file
+> SimilarityFunction (DefaultSimilarity / BM25Similarity / LMJelinekMercerSimilarity / LMDirichletSimilarity)
+> No. of top documents to retrieve
+> Path of the directory to store initial retrieved documents
 > Word vector file path
-> Name of the field used for searching
-> Interaction matrix path (where matrices will be stored)
+> Name of the field used for searching (default 'content'- if using available index with this project)
+> Interaction matrix path
 ``````````````````````````````````````````````````````````````````````````````````````````
 
 Next, supervised deepQPP module is trained by a set of query pairs' relative specificity computed through **query_pair_judgement.py**. We train the model with paired data and tested with both paired and point test set. K-fold cross validation is used to test model's efficiency. 
