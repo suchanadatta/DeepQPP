@@ -33,18 +33,16 @@ class PointInstanceIds:
 class PairCmpDataGeneratorTrain(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, paired_instances_ids, dataFolder, batch_size, dim_top, dim_bottom, dim_label, topDocs,
-                 bottomDocs, interMatrix):
+    def __init__(self, paired_instances_ids, dataFolder, batch_size, dim, dim_label, qterms, bertVector):
+
         'Initialization'
         self.paired_instances_ids = paired_instances_ids
-        self.dim = [dim_top, dim_bottom, dim_top, dim_bottom, dim_label]
+        self.dim = [dim, dim_label]
         self.batch_size = batch_size
         self.dataDir = dataFolder
-        self.K = topDocs
-        self.L = bottomDocs
-        self.M = interMatrix
+        self.K = qterms
+        self.M = bertVector
         self.on_epoch_end()
-        self.totalRetDocs = 100
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -70,7 +68,7 @@ class PairCmpDataGeneratorTrain(keras.utils.Sequence):
     def __data_generation(self, list_IDs):
         'Generates data pairs containing batch_size samples'
         # Initialization
-        X = [np.empty((self.batch_size, *self.dim[i])) for i in range(5)]
+        X = [np.empty((self.batch_size, *self.dim[i])) for i in range(2)]
         Y = np.empty(self.batch_size, dtype=int)
 
         # Generate data
@@ -80,51 +78,35 @@ class PairCmpDataGeneratorTrain(keras.utils.Sequence):
 
             # read from the data file and construct the instances
             a_data = pair.InteractionData(a_id, self.dataDir)
-            a_data_top = a_data.matrix[0:self.K, :]
-            a_data_bottom = a_data.matrix[(self.totalRetDocs - self.L):, :]
-            # assert a_data_top.shape != (self.K, self.M), a_data_top.shape
-
             b_data = pair.InteractionData(b_id, self.dataDir)
-            b_data_top = b_data.matrix[0:self.K, :]
-            b_data_bottom = b_data.matrix[(self.totalRetDocs - self.L):, :]
-            # assert b_data_bottom.shape != (self.K, self.M), b_id
 
-            # w, h = a_data.matrix.shape
-            w_top_a, h_top_a = a_data_top.shape
-            w_bottom_a, h_bottom_a = a_data_bottom.shape
-            a_data_top = a_data_top.reshape(w_top_a, h_top_a, 1)
-            a_data_bottom = a_data_bottom.reshape(w_bottom_a, h_bottom_a, 1)
+            w_a, h_a = a_data.shape
+            a_data = a_data.reshape(w_a, h_a, 1)
 
-            w_top_b, h_top_b = b_data_top.shape
-            w_bottom_b, h_bottom_b = b_data_bottom.shape
-            b_data_top = b_data_top.reshape(w_top_b, h_top_b, 1)
-            b_data_bottom = b_data_bottom.reshape(w_bottom_b, h_bottom_b, 1)
+            w_b, h_b = b_data.shape
+            b_data = b_data.reshape(w_b, h_b, 1)
 
-            X[0][i,] = a_data_top
-            X[1][i,] = a_data_bottom
-            X[2][i,] = b_data_top
-            X[3][i,] = b_data_bottom
-            X[4][i,] = paired_instance.class_label
+            X[0][i,] = a_data
+            X[1][i,] = b_data
+            X[2][i,] = paired_instance.class_label
             Y[i] = paired_instance.class_label
 
         return X, Y
 
 
+
 class PointCmpDataGeneratorTest(keras.utils.Sequence):
     'Generates data for Keras'
 
-    def __init__(self, paired_instances_ids, dataFolder, batch_size, dim_top, dim_bottom, topDocs,
-                 bottomDocs, interMatrix):
+    def __init__(self, paired_instances_ids, dataFolder, batch_size, dim, qterms, bertVector):
         'Initialization'
         self.paired_instances_ids = paired_instances_ids
-        self.dim = [dim_top, dim_bottom]
+        self.dim = dim
         self.batch_size = batch_size
         self.dataDir = dataFolder
-        self.K = topDocs
-        self.L = bottomDocs
-        self.M = interMatrix
+        self.K = qterms
+        self.M = bertVector
         self.on_epoch_end()
-        self.totalRetDocs = 100
 
     def __len__(self):
         'Denotes the number of batches per epoch'
@@ -148,7 +130,7 @@ class PointCmpDataGeneratorTest(keras.utils.Sequence):
     def __data_generation(self, list_IDs):
         'Generates data pairs containing batch_size samples'
         # Initialization
-        X = [np.empty((self.batch_size, *self.dim[i])) for i in range(1)]
+        X = [np.empty((self.batch_size, *self.dim)) for i in range(1)]
 
         # Generate data
         for i, paired_instance in enumerate(list_IDs):
@@ -156,16 +138,10 @@ class PointCmpDataGeneratorTest(keras.utils.Sequence):
 
             # read from the data file and construct the instances
             a_data = pair.InteractionData(a_id, self.dataDir)
-            a_data_top = a_data.matrix[0:self.K, :]
-            a_data_bottom = a_data.matrix[(self.totalRetDocs - self.L):, :]
+            w_a, h_a = a_data.shape
+            a_data = a_data.reshape(w_a, h_a, 1)
 
-            w_top_a, h_top_a = a_data_top.shape
-            w_bottom_a, h_bottom_a = a_data_bottom.shape
-            a_data_top = a_data_top.reshape(w_top_a, h_top_a, 1)
-            a_data_bottom = a_data_bottom.reshape(w_bottom_a, h_bottom_a, 1)
-
-            X[0][i,] = a_data_top
-            # X[1][i,] = a_data_bottom
+            X[0][i,] = a_data
 
         return X
 
@@ -199,49 +175,24 @@ class ConvModel:
 
         return matrix_encoder
 
-    def build_siamese_custom_loss(input_shape_top, input_shape_bottom, input_label_shape, base_model):
-        input_a_top = Input(shape=input_shape_top, dtype='float32')
-        input_a_bottom = Input(shape=input_shape_bottom, dtype='float32')
-        # input_c_top = Input(shape=input_label_shape, dtype='float32')
-
-        input_b_top = Input(shape=input_shape_top, dtype='float32')
-        input_b_bottom = Input(shape=input_shape_bottom, dtype='float32')
+    def build_siamese_custom_loss(input_shape, input_label_shape, base_model):
+        input_a = Input(shape=input_shape, dtype='float32')
+        input_b = Input(shape=input_shape, dtype='float32')
         input_c = Input(shape=input_label_shape, dtype='float32')
 
-        matrix_encoder_top = Sequential(name='sequence_1')
-        matrix_encoder_top.add(Conv2D(32, (5, 5), activation='relu', input_shape=input_shape_top))
-        # matrix_encoder_top.add(Dense(500))
-        matrix_encoder_top.add(MaxPooling2D(padding='same'))
-        matrix_encoder_top.add(Conv2D(64, (3, 3), activation='relu', input_shape=input_shape_top))
-        # matrix_encoder_top.add(Dense(500))
-        matrix_encoder_top.add(MaxPooling2D(padding='same'))
-        matrix_encoder_top.add(Flatten())
-        matrix_encoder_top.add(Dropout(0.2))
-        matrix_encoder_top.add(Dense(128, activation='relu'))
-        matrix_encoder_top.add(Dense(1, activation='linear'))
+        matrix_encoder = Sequential(name='sequence_1')
+        matrix_encoder.add(Conv2D(32, (5, 5), activation='relu', input_shape=input_shape))
+        matrix_encoder.add(Dense(500))
+        matrix_encoder.add(MaxPooling2D(padding='same'))
+        matrix_encoder.add(Flatten())
+        matrix_encoder.add(Dropout(0.2))
+        matrix_encoder.add(Dense(128, activation='relu'))
 
-        matrix_encoder_bottom = Sequential(name='sequence_2')
-        matrix_encoder_bottom.add(Conv2D(32, (5, 5), activation='relu', input_shape=input_shape_bottom))
-        # matrix_encoder_bottom.add(Dense(500))
-        matrix_encoder_bottom.add(MaxPooling2D(padding='same'))
-        matrix_encoder_bottom.add(Conv2D(64, (3, 3), activation='relu', input_shape=input_shape_bottom))
-        # matrix_encoder_bottom.add(Dense(500))
-        matrix_encoder_bottom.add(MaxPooling2D(padding='same'))
-        matrix_encoder_bottom.add(Flatten())
-        matrix_encoder_bottom.add(Dropout(0.2))
-        matrix_encoder_bottom.add(Dense(128, activation='relu'))
-        matrix_encoder_bottom.add(Dense(1, activation='linear'))
+        encoded_a = base_model(input_a)
+        encoded_b = base_model(input_b)
 
-        encoded_a_top = base_model(input_a_top)
-        encoded_a_bottom = base_model(input_a_bottom)
-        merged_vector_a = concatenate([encoded_a_top, encoded_a_bottom], axis=-1, name='concatenate_1')
-
-        encoded_b_top = base_model(input_b_top)
-        encoded_b_bottom = base_model(input_b_bottom)
-        merged_vector_b = concatenate([encoded_b_top, encoded_b_bottom], axis=-1, name='concatenate_2')
-
-        pair_indicator = Lambda(ConvModel.pair_loss)([merged_vector_a, merged_vector_b, input_c])
-        siamese_net_custom = Model(inputs=[input_a_top, input_a_bottom, input_b_top, input_b_bottom, input_c],
+        pair_indicator = Lambda(ConvModel.pair_loss)([encoded_a, encoded_b, input_c])
+        siamese_net_custom = Model(inputs=[input_a, input_b, input_c],
                                    outputs=pair_indicator)
 
         return siamese_net_custom
@@ -251,13 +202,11 @@ class QPPEvalPoint:
 
     def __init__(self, config):
         self.conf = config
-        # parameters : K=no. of top docs (default=10)
-        #              L=no. of bottom docs (default=10)
-        #              M=bin size (default=30)
+        # parameters : K=no. of max qterms
+        #              M=bert vector size (default=768)
         #              NumChannel=no. of channels passed through (default=1)
-        self.K = 10
-        self.L = 10
-        self.M = 120
+        self.K = 5
+        self.M = 768
         self.NUMCHANNELS = 1
         self.LR = 0.0001
         self.apPath = self.conf.config.get('Section', 'apPath')
@@ -312,7 +261,6 @@ class QPPEvalPoint:
             # build siamese model
             base = ConvModel.base_model((self.K, self.M, self.NUMCHANNELS))
             siamese_model_custom = ConvModel.build_siamese_custom_loss((self.K, self.M, self.NUMCHANNELS),
-                                                                       (self.L, self.M, self.NUMCHANNELS),
                                                                        (1, 1, 1), base)
             siamese_model_custom.compile(loss=ConvModel.identity_loss,
                                          optimizer=Adam(self.LR),
@@ -322,12 +270,12 @@ class QPPEvalPoint:
 
             # train data generator
             training_generator = PairCmpDataGeneratorTrain(np.array(all_query_pairs_list)[train_split],
-                                                            dataFolder=self.conf.config.get('Section', 'interMatrixPath'),
+                                                            dataFolder=self.conf.config.get('Section', 'bertVecPath'),
                                                             batch_size=int(self.BATCH_SIZE),
-                                                            dim_top=(self.K, self.M, self.NUMCHANNELS),
-                                                            dim_bottom=(self.L, self.M, self.NUMCHANNELS),
+                                                            dim=(self.K, self.M, self.NUMCHANNELS),
                                                             dim_label=(1,1,1),
-                                                            topDocs=self.K, bottomDocs=self.L, interMatrix=self.M)
+                                                            qterms=self.K,
+                                                            bertVector=self.M)
             print('Size of the training generator : ', len(training_generator))
 
             # learn model parameters with the train split
@@ -348,9 +296,8 @@ class QPPEvalPoint:
             test_generator = PointCmpDataGeneratorTest(all_point_list_test,
                                                        dataFolder=self.conf.config.get('Section', 'interMatrixPath'),
                                                        batch_size=int(self.BATCH_SIZE),
-                                                       dim_top=(self.K, self.M, self.NUMCHANNELS),
-                                                       dim_bottom=(self.L, self.M, self.NUMCHANNELS),
-                                                       topDocs=self.K, bottomDocs=self.L, interMatrix=self.M)
+                                                       dim=(self.K, self.M, self.NUMCHANNELS),
+                                                       qterms=self.K, bertVector=self.M)
             print('Size of the test generator : ', len(test_generator))
 
             # make predictions
