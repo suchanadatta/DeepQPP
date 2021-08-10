@@ -8,7 +8,7 @@ echo "#######################################################################"
 echo "################# Generate Interaction Matrices #######################"
 echo "#######################################################################"
 
-sh intreaction.sh ./data/query /store/index/trec678/ ./InteractionMatrix/resources/smart-stopwords 3 100 ./data/ /store/causalIR/drmm/data/trec678.vec.model.txt content ./data/interaction_matrix/
+sh interaction.sh ./data/query /store/index/trec678/ ./InteractionMatrix/resources/smart-stopwords 3 100 ./data/ /store/causalIR/drmm/data/trec678.vec.model.txt content ./data/interaction_matrix/
 
 # store per query AP values
 # provide proper initial retrieved data file name
