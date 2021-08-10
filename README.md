@@ -34,7 +34,7 @@ and activate it using the command -
 **Step-3:** Check all the packages listed above using correct version of your pip -
 > pip list
 
-In case required packages missing, install the right version in your current conda environment by running -
+In case required packages are missing, install the right version in your current conda environment by running -
 > pip install -r requirements.txt 
 
 There is a top level bash script **main.sh**. Firstly, it runs the InteractionMatrix module to generate matching histograms of pseudo-relevant documents as proposed in the paper : [A Deep Relevance Matching Model for Ad-hoc Retrieval](https://dl.acm.org/doi/10.1145/2983323.2983769). It computes Log-IDF based histograms for a document with respect to a given query. This is built on top of LCH(Log-Count-based Histogram); LCH(with IDF) performs the best as reported in the paper. Given a query, interaction matrices computed for the set of respective relevant documents are stored in a single file with the name **query_id.hist**.
