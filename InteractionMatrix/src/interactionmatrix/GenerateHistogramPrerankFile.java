@@ -174,7 +174,6 @@ public class GenerateHistogramPrerankFile {
         WordVec qtv, dtv; // query and document word vector
         float cossim = 0.0f;
         
-        // ekhane docTerms er through stats. getallidf kore idf er hashmap ta baniye rakhte hobe
         oneDocIdfMap = new HashMap<>();
         oneDocIdfMap = stats.getAllIDF(fieldName, docTerms);
         
