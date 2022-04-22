@@ -3,6 +3,8 @@ This is a pairwise interaction based Deep Learning Model for supervised query pe
 The entire model is comprised of two modules - 1. **InteractionMatrix** (developed with Java) and 
 2. **DeepQPP** (written in Python) 
 
+![Alt text](deepqpp_model.png?raw=true "Title")
+
 ## Requirements
 To run the DeepQPP model, just check if your conda environment is good with the following python packages. 
 In case you want to use any higher or lower version of any of the followings, check if there is any 
