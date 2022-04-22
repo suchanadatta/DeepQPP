@@ -66,3 +66,18 @@ Next, supervised deepQPP module is trained by a set of query pairs' relative spe
 ``````````````````````````````````````````````````````````````````````````````````````````
 **Step-6:** Run the top level script
 > sh main.sh
+
+If you are using this model, please consider citing our work :
+`````````````````````````````````````````````````
+@article{DBLP:journals/corr/abs-2202-07376,
+  author    = {Suchana Datta and
+               Debasis Ganguly and
+               Derek Greene and
+               Mandar Mitra},
+  title     = {Deep-QPP: {A} Pairwise Interaction-based Deep Learning Model for Supervised
+               Query Performance Prediction},
+  journal   = {CoRR},
+  volume    = {abs/2202.07376},
+  year      = {2022}
+}
+`````````````````````````````````````````````````
